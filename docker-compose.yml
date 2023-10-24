@@ -1,12 +1,28 @@
 version: "3.8"
 services:
-  web:
+  mysqldb:
+    image: mysql
+    # NOTE: use of "mysql_native_password" is not recommended: https://dev.mysql.com/doc/refman/8.0/en/upgrading-from-previous-series.html#upgrade-caching-sha2-password
+    # (this is just an example, not intended to be a production configuration)
+    command: --default-authentication-plugin=mysql_native_password
+    ports:
+      - 3306:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: simple-password
+      MYSQL_DATABASE: simple-project
+    volumes:
+      - my-datavolume:/var/lib/mysql
+  server:
     build:
       context: .
       # Correct the path to your Dockerfile
       dockerfile: Dockerfile
     ports:
       - 4000:4000
+    restart: on-failure
     # Important to bind/mount your codebase dir to /app dir for live reload
     volumes:
       - ./:/app
+
+volumes:
+  my-datavolume:
