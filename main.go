@@ -8,8 +8,8 @@ import (
 
 func main() {
 	e := echo.New()
-	e.GET("/products", GetProduct)
-	e.GET("/products/:id", GetProductById)
+	e.GET("/v1/products", GetProduct)
+	e.GET("/v1/products/:id", GetProductById)
 
 	e.Logger.Fatal(e.Start(":4000"))
 }
