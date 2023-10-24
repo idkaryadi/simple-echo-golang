@@ -7,6 +7,7 @@ import (
 )
 
 func main() {
+	connectDB()
 	e := echo.New()
 	e.GET("/v1/products", GetProduct)
 	e.GET("/v1/products/:id", GetProductById)
