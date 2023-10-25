@@ -2,7 +2,7 @@ package main
 
 // Request
 type ProductRequest struct {
-	Name        string `json:"name"`
+	Name        string `json:"name" validate:"required"`
 	Description string `json:"description"`
 }
 
@@ -64,9 +64,9 @@ type ErrorResponse struct {
 	Message string `json:"message"`
 }
 
-func NewErrorResponse(status, message string) ErrorResponse {
+func NewErrorResponse(message string) ErrorResponse {
 	return ErrorResponse{
-		Status:  status,
+		Status:  "error",
 		Message: message,
 	}
 }
