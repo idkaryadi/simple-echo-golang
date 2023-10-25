@@ -7,13 +7,66 @@ type ProductRequest struct {
 }
 
 // Response
-type ProductResponse struct {
+type SuccessPayload struct {
+	Status string `json:"status"`
+}
+
+func NewSuccessPayload() SuccessPayload {
+	return SuccessPayload{Status: "success"}
+}
+
+type ProductPayloadResponse struct {
 	ID          int    `json:"id"`
 	Name        string `json:"name"`
 	Description string `json:"description"`
 }
 
-type BaseResponse struct {
-	Status  string      `json:"status"`
-	Payload interface{} `json:"payload"`
+func ToProductPayload(product Products) ProductPayloadResponse {
+	return ProductPayloadResponse{
+		ID:          product.ID,
+		Name:        product.Name,
+		Description: product.Description,
+	}
+}
+
+type GetProductResponse struct {
+	Status  string                 `json:"status"`
+	Payload ProductPayloadResponse `json:"payload"`
+}
+
+func NewGetProductResponse(result Products) GetProductResponse {
+	productPayload := ToProductPayload(result)
+	return GetProductResponse{
+		Status:  "Success",
+		Payload: productPayload,
+	}
+}
+
+type GetProductListResponse struct {
+	Status  string                   `json:"status"`
+	Payload []ProductPayloadResponse `json:"payload"`
+}
+
+func NewGetProductListResponse(result []Products) GetProductListResponse {
+	listProductResponse := make([]ProductPayloadResponse, len(result))
+	for i, v := range result {
+		listProductResponse[i] = ToProductPayload(v)
+	}
+	return GetProductListResponse{
+		Status:  "success",
+		Payload: listProductResponse,
+	}
+}
+
+// status: success, error
+type ErrorResponse struct {
+	Status  string `json:"status"`
+	Message string `json:"message"`
+}
+
+func NewErrorResponse(status, message string) ErrorResponse {
+	return ErrorResponse{
+		Status:  status,
+		Message: message,
+	}
 }
