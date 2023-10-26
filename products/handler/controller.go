@@ -10,15 +10,23 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-func GetProduct(c echo.Context) error {
-	products, err := repository.GetProducts()
+type Handler struct {
+	repo repository.Repository
+}
+
+func NewHandler(repo repository.Repository) Handler {
+	return Handler{repo: repo}
+}
+
+func (h Handler) GetProduct(c echo.Context) error {
+	products, err := h.repo.GetProducts()
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, NewErrorResponse(err.Error()))
 	}
 	return c.JSON(http.StatusOK, NewGetProductListResponse(products))
 }
 
-func GetProductById(c echo.Context) error {
+func (h Handler) GetProductById(c echo.Context) error {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, NewErrorResponse("Invalid Id"))
@@ -27,7 +35,7 @@ func GetProductById(c echo.Context) error {
 	// if result.RowsAffected < 1 {
 	// 	return c.JSON(http.StatusNotFound, NewErrorResponse("data not found"))
 	// }
-	product, err := repository.GetProductById(id)
+	product, err := h.repo.GetProductById(id)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, NewErrorResponse(err.Error()))
 	}
@@ -35,7 +43,7 @@ func GetProductById(c echo.Context) error {
 	return c.JSON(http.StatusOK, NewGetProductResponse(product))
 }
 
-func CreateProduct(c echo.Context) error {
+func (h Handler) CreateProduct(c echo.Context) error {
 	req := new(ProductRequest)
 	if err := c.Bind(req); err != nil {
 		return c.JSON(http.StatusBadRequest, NewErrorResponse(err.Error()))
@@ -47,14 +55,14 @@ func CreateProduct(c echo.Context) error {
 		Name:        req.Name,
 		Description: req.Description,
 	}
-	err := repository.CreateProduct(newProduct)
+	err := h.repo.CreateProduct(newProduct)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, NewErrorResponse(err.Error()))
 	}
 	return c.JSON(http.StatusCreated, NewSuccessPayload())
 }
 
-func UpdateProduct(c echo.Context) error {
+func (h Handler) UpdateProduct(c echo.Context) error {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, NewErrorResponse(err.Error()))
@@ -67,7 +75,7 @@ func UpdateProduct(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, NewErrorResponse(err.Error()))
 	}
 	// get product
-	product, err := repository.GetProductById(id)
+	product, err := h.repo.GetProductById(id)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, NewErrorResponse(err.Error()))
 	}
@@ -83,20 +91,20 @@ func UpdateProduct(c echo.Context) error {
 		UpdatedAt:   time.Now(),
 		// DeletedAt:   product.DeletedAt,
 	}
-	err = repository.UpdateProduct(updateProduct)
+	err = h.repo.UpdateProduct(updateProduct)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, NewErrorResponse(err.Error()))
 	}
 	return c.JSON(http.StatusOK, NewSuccessPayload())
 }
 
-func DeleteProduct(c echo.Context) error {
+func (h Handler) DeleteProduct(c echo.Context) error {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, NewErrorResponse(err.Error()))
 	}
 
-	err = repository.DeleteProduct(id)
+	err = h.repo.DeleteProduct(id)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, NewErrorResponse(err.Error()))
 	}
