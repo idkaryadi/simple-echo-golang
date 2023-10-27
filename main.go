@@ -16,7 +16,7 @@ func main() {
 	e := echo.New()
 
 	repo := repository.NewRepository(config.DB)
-	handler := handler.NewHandler(repo)
+	handler := handler.NewHandler(&repo)
 	products.NewRoute(e, handler)
 
 	e.Logger.Fatal(e.Start(":4000"))

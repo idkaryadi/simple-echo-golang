@@ -1,6 +1,8 @@
 package handler
 
-import "simple-echo-backend/products/repository"
+import (
+	"simple-echo-backend/products/core"
+)
 
 // Request
 type ProductRequest struct {
@@ -23,7 +25,7 @@ type ProductPayloadResponse struct {
 	Description string `json:"description"`
 }
 
-func ToProductPayload(product repository.Products) ProductPayloadResponse {
+func ToProductPayload(product core.Products) ProductPayloadResponse {
 	return ProductPayloadResponse{
 		ID:          product.ID,
 		Name:        product.Name,
@@ -36,7 +38,7 @@ type GetProductResponse struct {
 	Payload ProductPayloadResponse `json:"payload"`
 }
 
-func NewGetProductResponse(result repository.Products) GetProductResponse {
+func NewGetProductResponse(result core.Products) GetProductResponse {
 	productPayload := ToProductPayload(result)
 	return GetProductResponse{
 		Status:  "Success",
@@ -49,7 +51,7 @@ type GetProductListResponse struct {
 	Payload []ProductPayloadResponse `json:"payload"`
 }
 
-func NewGetProductListResponse(result []repository.Products) GetProductListResponse {
+func NewGetProductListResponse(result []core.Products) GetProductListResponse {
 	listProductResponse := make([]ProductPayloadResponse, len(result))
 	for i, v := range result {
 		listProductResponse[i] = ToProductPayload(v)
