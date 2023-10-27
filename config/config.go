@@ -18,7 +18,4 @@ func ConnectDB() {
 	if err != nil {
 		fmt.Println("Err::", err)
 	}
-
-	// TODO: auto migrate
-	// DB.AutoMigrate(&Products{})
 }

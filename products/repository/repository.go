@@ -13,6 +13,9 @@ type Repository struct {
 }
 
 func NewRepository(db *gorm.DB) Repository {
+	// TODO: auto migrate
+	db.AutoMigrate(&Products{})
+
 	return Repository{db: db}
 }
 
