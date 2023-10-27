@@ -3,7 +3,7 @@ package handler
 import (
 	"net/http"
 	"simple-echo-backend/common"
-	"simple-echo-backend/products/repository"
+	"simple-echo-backend/products/core"
 	"strconv"
 	"time"
 
@@ -11,10 +11,10 @@ import (
 )
 
 type Handler struct {
-	repo repository.Repository
+	repo core.Repository
 }
 
-func NewHandler(repo repository.Repository) Handler {
+func NewHandler(repo core.Repository) Handler {
 	return Handler{repo: repo}
 }
 
@@ -51,7 +51,7 @@ func (h Handler) CreateProduct(c echo.Context) error {
 	if err := common.Validate.Struct(req); err != nil {
 		return c.JSON(http.StatusBadRequest, NewErrorResponse(err.Error()))
 	}
-	newProduct := repository.Products{
+	newProduct := core.Products{
 		Name:        req.Name,
 		Description: req.Description,
 	}
@@ -83,7 +83,7 @@ func (h Handler) UpdateProduct(c echo.Context) error {
 	// if resProduct.RowsAffected < 1 {
 	// 	return c.JSON(http.StatusNotFound, NewErrorResponse("data not found"))
 	// }
-	updateProduct := repository.Products{
+	updateProduct := core.Products{
 		ID:          id,
 		Name:        req.Name,
 		Description: req.Description,
